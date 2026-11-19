@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Oak &amp; Bean — Coffee, Bakes &amp; Slow Mornings</title>
+<meta name="description" content="Oak & Bean is a neighbourhood café serving small-batch coffee and fresh bakes. Book a table by email.">
+
+<!-- Google Fonts: Fraunces (display) + Inter (body) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+/* =========================================================
+   1. DESIGN TOKENS
+   Central place for brand colours, radii, shadows and widths.
+   ========================================================= */
+:root{
+  --forest:        #2E4A38;   /* Dark forest green — brand primary */
+  --forest-dark:   #22382A;   /* Deeper green for hovers/footer   */
+  --cream:         #F8F5F0;   /* Cream — page background           */
+  --cream-deep:    #EFE9DF;   /* Slightly warmer cream for panels  */
+  --accent:        #C97B4A;   /* Warm terracotta — buttons/accents */
+  --accent-dark:   #B0663A;
+  --accent-soft:   #E8B98C;   /* Light accent for text on green    */
+  --ink:           #1F2A22;   /* Near-black green for body text    */
+  --muted:         #5C6B60;   /* Muted green-grey for sub-copy     */
+
+  --radius:        18px;
+  --radius-lg:     28px;
+  --shadow-sm:     0 2px 10px rgba(46,74,56,.06);
+  --shadow-md:     0 10px 30px rgba(46,74,56,.10);
+  --shadow-lg:     0 18px 45px rgba(46,74,56,.16);
+
+  --maxw:          1160px;    /* Max content width on desktop      */
+  --gutter:        1.25rem;   /* Horizontal page padding (mobile)  */
+}
+
+/* =========================================================
+   2. BASE / RESET
+   ========================================================= */
+*,*::before,*::after{ box-sizing:border-box; }
+
+html{
+  scroll-behavior:smooth;      /* Smooth anchor scrolling           */
+  scroll-padding-top:80px;     /* Offset for the sticky header      */
+  -webkit-text-size-adjust:100%;
+}
+
+body{
+  margin:0;
+  background:var(--cream);
+  color:var(--ink);
+  font-family:'Inter', system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size:1rem;
+  line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+}
+
+h1,h2,h3{
+  font-family:'Fraunces', Georgia, serif;
+  font-weight:600;
+  line-height:1.12;
+  letter-spacing:-.01em;
+  margin:0;
+}
+
+p{ margin:0; }
+img{ display:block; max-width:100%; }
+ul{ margin:0; padding:0; list-style:none; }
+
+/* Visible keyboard focus for accessibility */
+a:focus-visible,
+button:focus-visible{
+  outline:3px solid var(--accent);
+  outline-offset:3px;
+  border-radius:6px;
+}
+
+/* =========================================================
+   3. LAYOUT HELPERS
+   .container centres content and applies mobile-first padding.
+   ========================================================= */
+.container{
+  width:100%;
+  max-width:var(--maxw);
+  margin-inline:auto;
+  padding-inline:var(--gutter);
+}
+
+/* Vertical rhythm for every content section */
+.section{
+  padding-block:clamp(3.5rem, 8vw, 6rem);
+  scroll-margin-top:80px;
+}
+
+/* Small uppercase label above headings */
+.eyebrow{
+  font-size:.76rem;
+  font-weight:600;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:var(--accent);
+  margin-bottom:.65rem;
+}
+
+/* Section heading block */
+.section-head{ max-width:640px; margin-bottom:clamp(2rem, 5vw, 3rem); }
+.section-head--center{ margin-inline:auto; text-align:center; }
+.section-head h2{
+  font-size:clamp(1.85rem, 5.5vw, 2.9rem);
+  color:var(--forest);
+}
+.section-sub{
+  margin-top:.85rem;
+  color:var(--muted);
+  font-size:1rem;
+}
+
+/* =========================================================
+   4. BUTTONS
+   Rounded pills, subtle lift + shadow on hover.
+   ========================================================= */
+.btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:.5rem;
+  padding:.95rem 1.75rem;
+  border-radius:999px;
+  font-family:'Inter', sans-serif;
+  font-size:.95rem;
+  font-weight:600;
+  text-decoration:none;
+  cursor:pointer;
+  transition:transform .25s ease, box-shadow .25s ease,
+             background-color .25s ease, color .25s ease;
+}
+
+.btn-primary{
+  background:var(--accent);
+  color:#fff;
+  box-shadow:0 10px 24px rgba(201,123,74,.32);
+}
+.btn-primary:hover{
+  background:var(--accent-dark);
+  transform:translateY(-3px);
+  box-shadow:0 16px 34px rgba(201,123,74,.42);
+}
+.btn-primary:active{ transform:translateY(-1px); }
+
+/* Ghost button used on the dark hero photo */
+.btn-ghost{
+  background:rgba(248,245,240,.10);
+  color:var(--cream);
+  border:1.5px solid rgba(248,245,240,.55);
+  backdrop-filter:blur(4px);
+}
+.btn-ghost:hover{
+  background:rgba(248,245,240,.95);
+  color:var(--forest);
+  transform:translateY(-3px);
+}
+
+/* Smaller variant for the header bar */
+.btn-sm{ padding:.6rem 1.15rem; font-size:.85rem; }
+
+/* =========================================================
+   5. HEADER / NAVIGATION (sticky, blurred cream bar)
+   ========================================================= */
+.site-header{
+  position:sticky;
+  top:0;
+  z-index:50;
+  background:rgba(248,245,240,.88);
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+  border-bottom:1px solid rgba(46,74,56,.08);
+}
+
+.nav{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:1rem;
+  padding-block:.85rem;
+}
+
+/* Text-only logo */
+.logo{
+  font-family:'Fraunces', Georgia, serif;
+  font-size:1.3rem;
+  font-weight:600;
+  letter-spacing:-.015em;
+  color:var(--forest);
+  text-decoration:none;
+  white-space:nowrap;
+  transition:opacity .2s ease;
+}
+.logo span{ color:var(--accent); }
+.logo:hover{ opacity:.75; }
+
+.nav-links{
+  display:flex;
+  align-items:center;
+  gap:1.15rem;
+}
+
+.nav-links a:not(.btn){
+  position:relative;
+  color:var(--forest);
+  font-size:.9rem;
+  font-weight:500;
+  text-decoration:none;
+  transition:color .2s ease;
+}
+/* Animated underline on hover */
+.nav-links a:not(.btn)::after{
+  content:"";
+  position:absolute;
+  left:0;
+  bottom:-5px;
+  width:0;
+  height:2px;
+  border-radius:2px;
+  background:var(--accent);
+  transition:width .25s ease;
+}
+.nav-links a:not(.btn):hover{ color:var(--accent-dark); }
+.nav-links a:not(.btn):hover::after{ width:100%; }
+
+/* Hide the header CTA on the smallest screens to save space */
+.nav-links .btn{ display:none; }
+
+/* =========================================================
+   6. HERO — full-bleed café photo with green overlay
+   ========================================================= */
+.hero{
+  position:relative;
+  display:grid;
+  place-items:center;
+  text-align:center;
+  min-height:88vh;
+  min-height:88svh;              /* Better on mobile browsers */
+  padding:5rem 0 4rem;
+  color:var(--cream);
+  background-image:
+    linear-gradient(180deg,
+      rgba(30,48,36,.78) 0%,
+      rgba(30,48,36,.52) 45%,
+      rgba(30,48,36,.86) 100%),
+    url("https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&w=1920&q=80");
+  background-size:cover;
+  background-position:center;
+  background-repeat:no-repeat;
+}
+
+.hero-inner{ max-width:720px; }
+
+.hero .eyebrow{ color:var(--accent-soft); }
+
+.hero h1{
+  font-size:clamp(2.4rem, 9vw, 4.4rem);
+  line-height:1.04;
+  text-shadow:0 2px 24px rgba(0,0,0,.25);
+}
+
+.hero-sub{
+  margin:1.1rem auto 0;
+  max-width:44ch;
+  font-size:clamp(1rem, 2.6vw, 1.15rem);
+  color:rgba(248,245,240,.88);
+}
+
+.hero-actions{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:.85rem;
+  margin-top:2rem;
+}
+
+/* =========================================================
+   7. MENU — responsive card grid
+   Mobile: 1 column → Tablet: 2 → Desktop: 3
+   ========================================================= */
+.menu{ background:var(--cream); }
+
+.menu-grid{
+  display:grid;
+  grid-template-columns:1fr;          /* Mobile-first: single column */
+  gap:1.5rem;
+}
+
+.menu-card{
+  display:flex;
+  flex-direction:column;
+  background:#fff;
+  border-radius:var(--radius-lg);
+  overflow:hidden;                    /* Clips the image zoom        */
+  box-shadow:var(--shadow-sm);
+  transition:transform .3s ease, box-shadow .3s ease;
+}
+
+.menu-card:hover{
+  transform:translateY(-6px);
+  box-shadow:var(--shadow-lg);
+}
+
+/* Large, appetising photography */
+.menu-card img{
+  width:100%;
+  aspect-ratio:4 / 3;
+  object-fit:cover;
+  transition:transform .6s ease;
+}
+.menu-card:hover img{ transform:scale(1.06); }
+
+.menu-body{
+  padding:1.35rem 1.4rem 1.5rem;
+  display:flex;
+  flex-direction:column;
+  gap:.5rem;
+}
+
+.menu-top{
+  display:flex;
+  align-items:baseline;
+  justify-content:space-between;
+  gap:.75rem;
+}
+
+.menu-top h3{
+  font-size:1.2rem;
+  color:var(--forest);
+}
+
+.price{
+  font-family:'Fraunces', Georgia, serif;
+  font-size:1rem;
+  font-weight:600;
+  color:var(--accent);
+  white-space:nowrap;
+}
+
+.menu-body p{
+  color:var(--muted);
+  font-size:.94rem;
+  line-height:1.6;
+}
+
+/* =========================================================
+   8. CONTACT — deep green rounded panel on warm cream
+   ========================================================= */
+.contact{
+  background:var(--cream-deep);
+  padding-block:clamp(3rem, 7vw, 5rem);
+}
+
+.contact-panel{
+  background:var(--forest);
+  color:var(--cream);
+  border-radius:var(--radius-lg);
+  padding:clamp(1.75rem, 5vw, 3.5rem);
+  box-shadow:var(--shadow-md);
+}
+
+.contact-panel .eyebrow{ color:var(--accent-soft); }
+.contact-panel h2{ color:var(--cream); }
+
+.contact-grid{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:2rem;
+}
+
+.contact-block h3{
+  font-size:1.1rem;
+  color:#fff;
+  margin-bottom:.65rem;
+}
+
+.contact-block p,
+.contact-block li{
+  color:rgba(248,245,240,.78);
+  font-size:.95rem;
+  line-height:1.7;
+}
+
+/* Opening hours list with dashed separators */
+.hours li{
+  display:flex;
+  justify-content:space-between;
+  gap:1rem;
+  padding-block:.4rem;
+  border-bottom:1px dashed rgba(248,245,240,.18);
+}
+.hours li:last-child{ border-bottom:none; }
+.hours span:last-child{ color:var(--cream); font-weight:500; }
+
+.contact-block--note .btn{ margin-top:1.25rem; }
+
+/* =========================================================
+   9. FOOTER
+   ========================================================= */
+.site-footer{
+  background:var(--forest-dark);
+  color:rgba(248,245,240,.72);
+  padding-block:2rem;
+  font-size:.88rem;
+}
+
+.footer-inner{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:.75rem;
+  text-align:center;
+}
+
+.logo--footer{ color:var(--cream); font-size:1.15rem; }
+
+.site-footer a{
+  color:var(--accent-soft);
+  text-decoration:none;
+  transition:color .2s ease;
+}
+.site-footer a:hover{ color:#fff; }
+
+/* =========================================================
+   10. MEDIA QUERIES (mobile-first breakpoints)
+   ========================================================= */
+
+/* --- Small tablets / large phones --- */
+@media (min-width:560px){
+  /* Show the header CTA once there's room for it */
+  .nav-links .btn{ display:inline-flex; }
+  .nav-links{ gap:1.4rem; }
+}
+
+/* --- Tablets --- */
+@media (min-width:640px){
+  :root{ --gutter:2rem; }
+
+  .hero{ min-height:82vh; min-height:82svh; }
+
+  /* Menu becomes two columns */
+  .menu-grid{ grid-template-columns:repeat(2, 1fr); }
+
+  /* Contact splits into two columns */
+  .contact-grid{ grid-template-columns:1fr 1fr; }
+  .contact-block--note{ grid-column:1 / -1; }
+
+  .footer-inner{
+    flex-direction:row;
+    justify-content:space-between;
+    text-align:left;
+  }
+}
+
+/* --- Desktop --- */
+@media (min-width:960px){
+  :root{ --gutter:2.5rem; }
+
+  .logo{ font-size:1.5rem; }
+  .nav-links a:not(.btn){ font-size:.95rem; }
+
+  /* Menu becomes three columns */
+  .menu-grid{ grid-template-columns:repeat(3, 1fr); gap:1.75rem; }
+
+  /* Contact becomes a balanced three-column layout */
+  .contact-grid{ grid-template-columns:1fr 1fr 1.2fr; }
+  .contact-block--note{ grid-column:auto; }
+}
+
+/* =========================================================
+   11. ACCESSIBILITY: respect reduced-motion preferences
+   ========================================================= */
+@media (prefers-reduced-motion: reduce){
+  html{ scroll-behavior:auto; }
+  *,*::before,*::after{
+    animation-duration:.001ms !important;
+    transition-duration:.001ms !important;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- ================= HEADER / NAV ================= -->
+<header class="site-header">
+  <div class="container nav">
+    <a class="logo" href="#top">Oak <span>&amp;</span> Bean</a>
+
+    <nav class="nav-links" aria-label="Primary navigation">
+      <a href="#menu">Menu</a>
+      <a href="#contact">Contact</a>
+      <!-- Opens the visitor's email client — no form on this version -->
+      <a class="btn btn-primary btn-sm" href="mailto:booking@oakandbean.com">Book a table</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- ================= HERO ================= -->
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="hero-inner container">
+      <p class="eyebrow">Café · Bakery · Roastery</p>
+      <h1 id="hero-title">Slow mornings,<br>good coffee.</h1>
+      <p class="hero-sub">
+        Small-batch roasts, warm pastries and a corner seat with your name on it.
+      </p>
+
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="mailto:booking@oakandbean.com">Book a table</a>
+        <a class="btn btn-ghost" href="#menu">View the menu</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= MENU ================= -->
+  <section class="section menu" id="menu" aria-labelledby="menu-title">
+    <div class="container">
+
+      <header class="section-head section-head--center">
+        <p class="eyebrow">The menu</p>
+        <h2 id="menu-title">Made fresh, every day</h2>
+        <p class="section-sub">
+          A short list, done properly. Beans roasted in-house, bakes out of the oven by 7am.
+        </p>
+      </header>
+
+      <div class="menu-grid">
+
+        <!-- Card 1 -->
+        <article class="menu-card">
+          <img src="https://images.unsplash.com/photo-1510707577719-ae7c14805e3a?auto=format&fit=crop&w=800&q=80"
+               alt="A freshly pulled double espresso in a small ceramic cup"
+               loading="lazy" decoding="async">
+          <div class="menu-body">
+            <div class="menu-top">
+              <h3>House Espresso</h3>
+              <span class="price">$3.20</span>
+            </div>
+            <p>Double shot of our signature Oak blend. Bold, chocolatey, honest.</p>
+          </div>
+        </article>
+
+        <!-- Card 2 -->
+        <article class="menu-card">
+          <img src="https://images.unsplash.com/photo-1541167760496-1628856ab772?auto=format&fit=crop&w=800&q=80"
+               alt="Flat white coffee with latte art in a rounded cup"
+               loading="lazy" decoding="async">
+          <div class="menu-body">
+            <div class="menu-top">
+              <h3>Flat White</h3>
+              <span class="price">$4.20</span>
+            </div>
+            <p>Velvety microfoam over a ristretto base. Our most-ordered cup.</p>
+          </div>
+        </article>
+
+        <!-- Card 3 -->
+        <article class="menu-card">
+          <img src="https://images.unsplash.com/photo-1461023058943-07fcbe16d735?auto=format&fit=crop&w=800&q=80"
+               alt="Iced cold brew coffee served in a glass"
+               loading="lazy" decoding="async">
+          <div class="menu-body">
+            <div class="menu-top">
+              <h3>Cold Brew</h3>
+              <span class="price">$4.50</span>
+            </div>
+            <p>Steeped for 18 hours, served over ice. Smooth, zero bitterness.</p>
+          </div>
+        </article>
+
+        <!-- Card 4 -->
+        <article class="menu-card">
+          <img src="https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=800&q=80"
+               alt="Golden butter croissants stacked on a bakery counter"
+               loading="lazy" decoding="async">
+          <div class="menu-body">
+            <div class="menu-top">
+              <h3>Butter Croissant</h3>
+              <span class="price">$3.80</span>
+            </div>
+            <p>Laminated over three days. Shatteringly crisp, all butter.</p>
+          </div>
+        </article>
+
+        <!-- Card 5 -->
+        <article class="menu-card">
+          <img src="https://images.unsplash.com/photo-1525351484163-7529414344d8?auto=format&fit=crop&w=800&q=80"
+               alt="Avocado toast on sourdough with chilli flakes and lemon"
+               loading="lazy" decoding="async">
+          <div class="menu-body">
+            <div class="menu-top">
+              <h3>Avocado Toast</h3>
+              <span class="price">$8.50</span>
+            </div>
+            <p>Sourdough, smashed avocado, chilli flakes, lemon. Simple and right.</p>
+          </div>
+        </article>
+
+        <!-- Card 6 -->
+        <article class="menu-card">
+          <img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=800&q=80"
+               alt="A slice of layered seasonal cake on a plate"
+               loading="lazy" decoding="async">
+          <div class="menu-body">
+            <div class="menu-top">
+              <h3>Seasonal Cake</h3>
+              <span class="price">$5.00</span>
+            </div>
+            <p>Whatever the baker felt like that morning. Always good with coffee.</p>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= CONTACT ================= -->
+  <section class="contact" id="contact" aria-labelledby="contact-title">
+    <div class="container">
+      <div class="contact-panel">
+
+        <header class="section-head">
+          <p class="eyebrow">Find us</p>
+          <h2 id="contact-title">Come say hello</h2>
+        </header>
+
+        <div class="contact-grid">
+
+          <!-- Address -->
+          <div class="contact-block">
+            <h3>Address</h3>
+            <p>
+              14 Oakfield Lane<br>
+              Greenwich, London SE10 8RT
+            </p>
+          </div>
+
+          <!-- Opening hours -->
+          <div class="contact-block">
+            <h3>Opening hours</h3>
+            <ul class="hours">
+              <li><span>Mon – Fri</span><span>7:30 – 18:00</span></li>
+              <li><span>Saturday</span><span>8:00 – 18:00</span></li>
+              <li><span>Sunday</span><span>9:00 – 16:00</span></li>
+            </ul>
+          </div>
+
+          <!-- Note + email booking -->
+          <div class="contact-block contact-block--note">
+            <h3>Bookings</h3>
+            <p>
+              We keep a few tables free — drop us an email and we'll save you one.
+              Walk-ins are always welcome.
+            </p>
+            <a class="btn btn-primary" href="mailto:booking@oakandbean.com">Book a table</a>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ================= FOOTER ================= -->
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <span class="logo logo--footer">Oak <span>&amp;</span> Bean</span>
+    <p>&copy; 2025 Oak &amp; Bean — roasted with care. <a href="mailto:booking@oakandbean.com">booking@oakandbean.com</a></p>
+  </div>
+</footer>
+
+</body>
+</html>
